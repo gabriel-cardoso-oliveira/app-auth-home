@@ -2,8 +2,6 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as SecureStore from "expo-secure-store";
 
-import { useAuthStore } from "@/features/auth/store/auth.store";
-
 import homeFeedData from "../../mock/data/home-feed.json";
 
 const api = axios.create({
@@ -12,11 +10,15 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const { useAuthStore } = await import("@/features/auth/store/auth.store");
+
     const token = useAuthStore.getState().accessToken;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error),

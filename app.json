@@ -4,13 +4,15 @@
     "slug": "app-auth-home",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "app-auth-home",
     "icon": "./assets/icon.png",
+    "backgroundColor": "#F9FAFC",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#F9FAFC"
     },
     "ios": {
       "supportsTablet": true
@@ -18,14 +20,15 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#F9FAFC"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
-    "plugins": ["expo-font"]
+    "plugins": ["expo-font", "expo-router"]
   }
 }
