@@ -6,6 +6,7 @@ import { Form, H4 } from "tamagui";
 import { AppButton } from "@/shared/components/AppButton";
 import { ControlledInput } from "@/shared/components/ControlledInput";
 import { FormError } from "@/shared/components/FormError";
+import { PasswordStrengthIndicator } from "@/shared/components/PasswordStrengthIndicator";
 
 import { createPassword } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
@@ -13,7 +14,6 @@ import {
   CreatePasswordData,
   createPasswordSchema,
 } from "../validators/auth.validators";
-import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
 
 export function CreatePasswordForm() {
   const { login: loginUser } = useAuthStore();

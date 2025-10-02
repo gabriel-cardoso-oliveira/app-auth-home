@@ -1,24 +1,49 @@
-// import { FeedList } from '@/features/home/ui/FeedList';
+import { Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { H4, YStack } from "tamagui";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { HomeFeed } from "@/features/home/ui/HomeFeed";
 import { AppButton } from "@/shared/components/AppButton";
 
 export default function HomeScreen() {
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Sair",
+      "Tem certeza que deseja sair?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Sair",
+          onPress: logout,
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <YStack flex={1} padding="$4" gap="$4">
-        <H4 textAlign="center" fontSize="$4" color="$color.textPrimary">
-          Olá, {user?.email}
-        </H4>
-        {/* <FeedList /> */}
-        <AppButton variant="outlined" onPress={logout}>
-          Logout
-        </AppButton>
-      </YStack>
-    </SafeAreaView>
+    <YStack f={1} backgroundColor="$background" padding="$4" gap="$4">
+      <SafeAreaView style={{ flex: 1 }}>
+        <YStack gap="$3" f={1}>
+          <H4 fontSize="$6" color="$color.textPrimary">
+            Bem vindo!
+          </H4>
+
+          <HomeFeed />
+
+          <AppButton onPress={handleLogout} variant="outlined">
+            Sair
+          </AppButton>
+        </YStack>
+      </SafeAreaView>
+    </YStack>
   );
 }
