@@ -1,12 +1,24 @@
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
+
+import { LoginForm } from "@/features/auth/ui/LoginForm";
 
 export default function LoginScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <YStack flex={1} justifyContent="center" padding="$4">
-        <Text>Página de Login</Text>
-      </YStack>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        >
+          <YStack padding="$4">
+            <LoginForm />
+          </YStack>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

@@ -1,6 +1,8 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as SecureStore from "expo-secure-store";
+
+import { LoginData } from "@/features/auth/validators/auth.validators";
 
 import homeFeedData from "../../mock/data/home-feed.json";
 
@@ -51,19 +53,25 @@ mock.onPost("/mock/auth/create-password").reply(async (config) => {
   return [200, { accessToken: MOCK_TOKEN, user }];
 });
 
-mock.onPost("/mock/auth/login").reply(async (config) => {
-  const { email, password } = JSON.parse(config.data);
-  const storedPassword = await SecureStore.getItemAsync(email);
-  if (storedPassword && storedPassword === password) {
-    return [
-      200,
-      {
-        accessToken: MOCK_TOKEN,
-        user: { email },
-      },
-    ];
-  }
-  return [401, { message: "Credenciais inválidas" }];
-});
+mock
+  .onPost("/mock/auth/login")
+  .reply(async (config: AxiosRequestConfig<LoginData>) => {
+    if (!config.data) {
+      return [400, { message: "Dados inválidos" }];
+    }
+
+    const { documentOrEmail, password } = config.data;
+    const storedPassword = await SecureStore.getItemAsync(documentOrEmail);
+    if (storedPassword && storedPassword === password) {
+      return [
+        200,
+        {
+          accessToken: MOCK_TOKEN,
+          user: { email: documentOrEmail },
+        },
+      ];
+    }
+    return [401, { message: "Credenciais inválidas" }];
+  });
 
 mock.onGet("/mock/home-feed").reply(200, homeFeedData);

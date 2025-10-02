@@ -5,7 +5,8 @@ import { create } from "zustand";
 
 import api from "@/core/axios";
 
-interface User {
+export interface User {
+  name: string;
   email: string;
 }
 
@@ -16,7 +17,7 @@ interface AuthState {
   isLoading: boolean;
   setUser: (user: User | null) => void;
   setToken: (token: string | null) => void;
-  login: (email: string, password: string) => Promise<void>;
+  login: (user: User, accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
   createPassword: (email: string, password: string) => Promise<void>;
   restoreSession: () => Promise<boolean>;
@@ -29,18 +30,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: false,
   setUser: (user) => set({ user }),
   setToken: (token) => set({ accessToken: token, isAuthenticated: !!token }),
-  login: async (email, password) => {
+  login: async (user, accessToken) => {
     set({ isLoading: true });
-    try {
-      const res = await api.post("/mock/auth/login", { email, password });
-      const { accessToken, user } = res.data;
-      await SecureStore.setItemAsync("accessToken", accessToken);
-      await AsyncStorage.setItem("userProfile", JSON.stringify(user));
-      set({ accessToken, user, isAuthenticated: true, isLoading: false });
-    } catch (e) {
-      set({ isLoading: false });
-      throw e;
-    }
+    await SecureStore.setItemAsync("accessToken", accessToken);
+    await AsyncStorage.setItem("userProfile", JSON.stringify(user));
+    set({ accessToken, user, isAuthenticated: true, isLoading: false });
   },
   logout: async () => {
     await SecureStore.deleteItemAsync("accessToken");
