@@ -7,43 +7,52 @@ import { AppButton } from "@/shared/components/AppButton";
 import { ControlledInput } from "@/shared/components/ControlledInput";
 import { FormError } from "@/shared/components/FormError";
 
-import { login, LoginCredentials } from "../services/auth.service";
+import { createPassword } from "../services/auth.service";
 import { useAuthStore } from "../store/auth.store";
-import { LoginData, loginSchema } from "../validators/auth.validators";
+import {
+  CreatePasswordData,
+  createPasswordSchema,
+} from "../validators/auth.validators";
+import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
 
-export function LoginForm() {
+export function CreatePasswordForm() {
   const { login: loginUser } = useAuthStore();
 
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
     setError,
     setFocus,
-  } = useForm<LoginData>({
-    resolver: zodResolver(loginSchema),
+    getFieldState,
+  } = useForm<CreatePasswordData>({
+    resolver: zodResolver(createPasswordSchema),
+    mode: "onBlur",
   });
 
-  const onSubmit = async (data: LoginCredentials) => {
+  const passwordValue = watch("password");
+
+  const onSubmit = async (data: CreatePasswordData) => {
     try {
-      const { user, accessToken } = await login(data);
+      const { user, accessToken } = await createPassword(data);
       await loginUser(user, accessToken);
       router.replace("/home");
     } catch (error: any) {
       setError("root.serverError", {
         type: "manual",
-        message: error.message || "Credenciais inválidas. Tente novamente.",
+        message: error.message || "Ocorreu um erro.",
       });
     }
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} gap="$5">
+    <Form onSubmit={handleSubmit(onSubmit)} gap="$4">
       <H4 textAlign="center" fontSize="$6" color="$color.textPrimary">
-        Acessar Conta
+        Criar Senha
       </H4>
 
-      <ControlledInput<LoginData>
+      <ControlledInput<CreatePasswordData>
         control={control}
         name="documentOrEmail"
         placeholder="CPF ou E-mail"
@@ -54,10 +63,24 @@ export function LoginForm() {
         onSubmitEditing={() => setFocus("password")}
       />
 
-      <ControlledInput<LoginData>
+      <ControlledInput<CreatePasswordData>
         control={control}
         name="password"
         placeholder="Senha"
+        secureTextEntry
+        textContentType="password"
+        returnKeyType="next"
+        onSubmitEditing={() => setFocus("confirmPassword")}
+      />
+
+      {getFieldState("password").isDirty && (
+        <PasswordStrengthIndicator password={passwordValue} />
+      )}
+
+      <ControlledInput<CreatePasswordData>
+        control={control}
+        name="confirmPassword"
+        placeholder="Confirmar Senha"
         secureTextEntry
         textContentType="password"
         returnKeyType="send"
@@ -67,14 +90,15 @@ export function LoginForm() {
       <FormError message={errors.root?.serverError?.message} />
 
       <Form.Trigger asChild disabled={isSubmitting}>
-        <AppButton isLoading={isSubmitting}>Entrar</AppButton>
+        <AppButton isLoading={isSubmitting}>Criar e Acessar</AppButton>
       </Form.Trigger>
 
       <AppButton
-        onPress={() => router.push("/create-password")}
         variant="outlined"
+        onPress={() => router.back()}
+        disabled={isSubmitting}
       >
-        Criar senha
+        Voltar
       </AppButton>
     </Form>
   );

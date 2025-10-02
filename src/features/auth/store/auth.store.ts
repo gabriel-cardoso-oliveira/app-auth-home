@@ -3,8 +3,6 @@ import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
 
-import api from "@/core/axios";
-
 export interface User {
   name: string;
   email: string;
@@ -19,7 +17,6 @@ interface AuthState {
   setToken: (token: string | null) => void;
   login: (user: User, accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
-  createPassword: (email: string, password: string) => Promise<void>;
   restoreSession: () => Promise<boolean>;
 }
 
@@ -64,16 +61,5 @@ export const useAuthStore = create<AuthState>((set) => ({
       isLoading: false,
     });
     return false;
-  },
-  createPassword: async (email, password) => {
-    set({ isLoading: true });
-    const res = await api.post("/mock/auth/create-password", {
-      email,
-      password,
-    });
-    const { accessToken, user } = res.data;
-    await SecureStore.setItemAsync("token", accessToken);
-    await AsyncStorage.setItem("profile", JSON.stringify(user));
-    set({ accessToken, user, isLoading: false });
   },
 }));

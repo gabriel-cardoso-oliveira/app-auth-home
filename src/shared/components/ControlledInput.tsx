@@ -16,7 +16,7 @@ export function ControlledInput<T extends FieldValues>({
       control={control}
       name={name}
       render={({
-        field: { onChange, onBlur, value },
+        field: { onChange, onBlur, value, ref: fieldRef },
         fieldState: { error },
       }) => (
         <YStack>
@@ -24,6 +24,7 @@ export function ControlledInput<T extends FieldValues>({
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            ref={fieldRef}
             size="$4"
             borderRadius="$6"
             color="$color.textPrimary"

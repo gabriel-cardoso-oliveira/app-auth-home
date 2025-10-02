@@ -1,8 +1,9 @@
 // import { FeedList } from '@/features/home/ui/FeedList';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Text, YStack } from "tamagui";
+import { H4, YStack } from "tamagui";
 
 import { useAuthStore } from "@/features/auth/store/auth.store";
+import { AppButton } from "@/shared/components/AppButton";
 
 export default function HomeScreen() {
   const { user, logout } = useAuthStore();
@@ -10,11 +11,13 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <YStack flex={1} padding="$4" gap="$4">
-        <Text fontSize="$6" fontWeight="bold">
+        <H4 textAlign="center" fontSize="$4" color="$color.textPrimary">
           Olá, {user?.email}
-        </Text>
+        </H4>
         {/* <FeedList /> */}
-        <Button onPress={logout}>Logout</Button>
+        <AppButton variant="outlined" onPress={logout}>
+          Logout
+        </AppButton>
       </YStack>
     </SafeAreaView>
   );

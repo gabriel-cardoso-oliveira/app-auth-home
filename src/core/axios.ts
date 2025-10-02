@@ -1,8 +1,12 @@
-import axios, { AxiosRequestConfig } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import * as SecureStore from "expo-secure-store";
 
-import { LoginData } from "@/features/auth/validators/auth.validators";
+import { User } from "@/features/auth/store/auth.store";
+import {
+  CreatePasswordData,
+  LoginData,
+} from "@/features/auth/validators/auth.validators";
 
 import homeFeedData from "../../mock/data/home-feed.json";
 
@@ -48,30 +52,66 @@ const mock = new MockAdapter(api, { delayResponse: 0 });
 const MOCK_TOKEN = "fake-jwt-token";
 
 mock.onPost("/mock/auth/create-password").reply(async (config) => {
-  const user = JSON.parse(config.data);
-  await SecureStore.setItemAsync(user.email, user.password);
-  return [200, { accessToken: MOCK_TOKEN, user }];
+  if (!config.data) {
+    return [400, { message: "Dados inválidos" }];
+  }
+
+  const users = (await AsyncStorage.getItem("users")) || "[]";
+  const user = JSON.parse(config.data) as CreatePasswordData;
+
+  const existingUser = users
+    ? JSON.parse(users).find(
+        (eUser: User) => eUser.email === user.documentOrEmail,
+      )
+    : null;
+
+  if (existingUser) {
+    return [400, { message: "Usuário já existe" }];
+  }
+
+  const newData = users
+    ? JSON.stringify([
+        ...JSON.parse(users),
+        { email: user.documentOrEmail, password: user.password },
+      ])
+    : JSON.stringify([
+        { email: user.documentOrEmail, password: user.password },
+      ]);
+
+  await AsyncStorage.setItem("users", newData);
+
+  return [
+    200,
+    { accessToken: MOCK_TOKEN, user: { email: user.documentOrEmail } },
+  ];
 });
 
-mock
-  .onPost("/mock/auth/login")
-  .reply(async (config: AxiosRequestConfig<LoginData>) => {
-    if (!config.data) {
-      return [400, { message: "Dados inválidos" }];
-    }
+mock.onPost("/mock/auth/login").reply(async (config) => {
+  if (!config.data) {
+    return [400, { message: "Dados inválidos" }];
+  }
 
-    const { documentOrEmail, password } = config.data;
-    const storedPassword = await SecureStore.getItemAsync(documentOrEmail);
-    if (storedPassword && storedPassword === password) {
-      return [
-        200,
-        {
-          accessToken: MOCK_TOKEN,
-          user: { email: documentOrEmail },
-        },
-      ];
-    }
-    return [401, { message: "Credenciais inválidas" }];
-  });
+  const users = await AsyncStorage.getItem("users");
+  if (!users) {
+    return [400, { message: "Usuário não encontrado" }];
+  }
+
+  const { documentOrEmail, password } = JSON.parse(config.data) as LoginData;
+
+  const storedPassword = JSON.parse(users).find(
+    (user: User) => user.email === documentOrEmail,
+  );
+
+  if (storedPassword && storedPassword.password === password) {
+    return [
+      200,
+      {
+        accessToken: MOCK_TOKEN,
+        user: { email: documentOrEmail },
+      },
+    ];
+  }
+  return [401, { message: "Credenciais inválidas" }];
+});
 
 mock.onGet("/mock/home-feed").reply(200, homeFeedData);
