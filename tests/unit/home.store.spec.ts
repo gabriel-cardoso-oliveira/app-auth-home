@@ -2,7 +2,7 @@ import { act, renderHook } from "@testing-library/react-native";
 
 import { FeedItem, useHomeStore } from "@/features/home/store/home.store";
 
-import { getHomeFeed } from "../../features/home/services/home.service";
+import { getHomeFeed } from "../../src/features/home/services/home.service";
 
 jest.mock("@/features/home/services/home.service");
 

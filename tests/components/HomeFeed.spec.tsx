@@ -1,6 +1,7 @@
 import { FeedItem, useHomeStore } from "@/features/home/store/home.store";
 import { HomeFeed } from "@/features/home/ui/HomeFeed";
-import { render, screen } from "@/tests/test-utils";
+
+import { render, screen } from "../test-utils";
 
 jest.mock("@/features/home/store/home.store");
 

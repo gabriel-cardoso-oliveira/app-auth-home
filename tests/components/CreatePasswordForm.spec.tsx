@@ -2,9 +2,9 @@ import { router } from "expo-router";
 
 import { useAuthStore, User } from "@/features/auth/store/auth.store";
 import { CreatePasswordForm } from "@/features/auth/ui/CreatePasswordForm";
-import { fireEvent, render, screen, waitFor } from "@/tests/test-utils";
 
-import * as authService from "../../features/auth/services/auth.service";
+import * as authService from "../../src/features/auth/services/auth.service";
+import { fireEvent, render, screen, waitFor } from "../test-utils";
 
 jest.mock("expo-router", () => ({
   router: {
