@@ -5,7 +5,7 @@ import { Card, Text, XStack, YStack } from "tamagui";
 
 import { FeedItem } from "../../store/home.store";
 
-interface FeedItemCardProps {
+export interface FeedItemCardProps {
   item: FeedItem;
 }
 

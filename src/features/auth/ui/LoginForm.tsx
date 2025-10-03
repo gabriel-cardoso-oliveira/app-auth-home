@@ -67,7 +67,9 @@ export function LoginForm() {
       <FormError message={errors.root?.serverError?.message} />
 
       <Form.Trigger asChild disabled={isSubmitting}>
-        <AppButton isLoading={isSubmitting}>Entrar</AppButton>
+        <AppButton testID="login-button-submit" isLoading={isSubmitting}>
+          Entrar
+        </AppButton>
       </Form.Trigger>
 
       <AppButton
