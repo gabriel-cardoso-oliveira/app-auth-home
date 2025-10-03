@@ -33,7 +33,12 @@ export const tamaguiConfig = createTamagui({
   themes: {
     light: {
       background: tokens.color.background,
+      backgroundHover: tokens.color.background,
+      backgroundPress: tokens.color.background,
       borderColor: tokens.color.cardBorder,
+      borderColorHover: tokens.color.cardBorder,
+      borderColorPress: tokens.color.cardBorder,
+      borderColorFocus: tokens.color.cardBorder,
       color: tokens.color.textPrimary,
       primary: tokens.color.primary,
     },

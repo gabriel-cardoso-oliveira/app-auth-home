@@ -10,7 +10,7 @@ export interface FeedItemCardProps {
 }
 
 const FeedItemCard = ({ item }: FeedItemCardProps) => (
-  <Card p="$3" bordered>
+  <Card p="$3" bordered borderColor="$color.cardBorder" bg="transparent">
     <YStack gap="$2" py="$2">
       <XStack justifyContent="space-between">
         <Text fontWeight="bold">{item.title}</Text>

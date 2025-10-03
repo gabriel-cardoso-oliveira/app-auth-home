@@ -29,6 +29,9 @@ export function ControlledInput<T extends FieldValues>({
             borderRadius="$6"
             color="$color.textPrimary"
             borderColor={error ? "$color.red10Light" : "$color.cardBorder"}
+            focusStyle={{
+              borderColor: error ? "$color.red10Light" : "$color.cardBorder",
+            }}
             {...props}
           />
           {error && (
